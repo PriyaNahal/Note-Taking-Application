@@ -1,0 +1,352 @@
+<html>
+    <head> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>{% block title %}My Notes{% endblock %}</title>
+
+        <style>
+            :root { /* make color changes here -- project pallete should be fully present here */
+                --background: #264653;
+                --background-light: #345360;
+                --accent: #c29421;
+                --text-dark: #3E424B;
+                --text-light: #F0EAD6; 
+                --line-border: rgba(127, 127, 127, 0.5);
+                --translucent:  rgba(127, 127, 127, 0.5);
+                --small-font: 14px;
+            }
+
+            /* #region general */
+            body {
+                color: var(--text-light);
+                background-color: var(--background);
+            }
+    
+            #app-container {
+                display: flex;
+                flex-direction: column;
+            }
+    
+            #main-container {
+                display: flex;
+                width: 100vw;
+            }
+    
+            #sidebar {   
+                background-color: var(--background-light);
+                max-width: 275px;
+            }
+    
+            #main-content {
+                color: #3E424B; /* use variable later*/
+                background-color: var(--text-light);
+            
+                flex:1;
+                overflow: auto;
+                height: 100vh;
+            
+                padding: 10px;
+            }
+
+            #second-content {
+                display: none;
+                color: var(--text-dark); 
+                background-color: var(--text-light);
+            
+                flex:1;
+                overflow: auto;
+                height: 100vh;
+            
+                padding: 10px;
+                border-left: 2px dotted var(--line-border);
+            }
+
+            .column {
+                width: 17vw;
+                height: 100vh;
+    
+                padding: 10px;
+              
+                overflow-y: auto;
+            }
+
+            form {
+                margin: 10px;
+            }
+            /* #endregion general */
+
+            /* #region pill-box */
+            .pill-box {
+                cursor: pointer;
+    
+                height: 30px;
+                max-width: 100%;
+    
+                border-radius: 20px; 
+                padding-left: 15px;
+
+                padding-right: 15px;
+                margin-bottom: 10px;
+    
+                text-align: left;
+                line-height: 30px;   
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            .pill-box:active {
+                opacity: 0.7;
+            }
+
+            select.pill-box {
+                border: none;
+                background-color: rgba(0,0,0,0);
+
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            select:focus.pill-box {
+                outline: none;      
+            }
+
+            a.pill-box {
+                display: block; 
+                text-decoration: none;
+                color: inherit; 
+            }
+
+            .pill-box.folder.outline {
+                outline: 2px solid var(--accent);
+                font-weight: bold;    
+            }
+            /* #endregion pill-box */
+
+            /* #region hotbar */
+            .hotbar {
+                display: flex;
+                background-color: rgba(0,0,0,0);
+                
+                width: 100%;
+                height: 30px;
+
+                border-bottom: 1px solid var(--line-border);
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                justify-content: space-between;
+
+                line-height: 30px;   
+            }
+
+            a.hotbar-button {
+                cursor: pointer;
+                color: var(--text-light);
+                background-color: var(--text-dark);
+
+                height: 20px;
+                width: fit-content;
+                margin: 5px;
+
+                line-height: 20px;  
+            }
+
+            #hotbar-options {
+                display: flex;
+                width: fit-content;
+            }
+            /* #endregion hotbar */
+    
+            /* #region directory colors */
+            .note {
+                background-color: var(--background-light);
+            }
+    
+            .folder {          
+                background-color: var(--background);
+            }
+
+            #notes-directory {
+                /*display: none;*/
+                background-color: var(--text-dark);      
+            }
+    
+            #full-directory-folder { 
+                background-color: var(--accent);
+                outline: 2px solid var(--accent);
+                font-weight: bold;    
+            }
+            /* #endregion directory colors */
+
+            /* #region button ids */
+            #sort-by-button {
+                color: var(--text);
+                background-color: solid var(--translucent);
+
+                height: 20px;
+                width: fit-content;
+                margin: 5px;
+            }
+
+            #new-folder-container {
+                display: flex; 
+                justify-content: left;
+                align-items: center;
+
+                position: relative;
+
+                background-color: white;
+                cursor: pointer;
+                max-height: 30px;
+
+                padding: 0;
+                margin: 0;
+                border: none;
+            }
+
+            #new-folder-text-box {
+                display: flex; 
+                justify-content: left;
+                align-items: left;
+
+                background-color: none;
+                cursor: pointer;
+
+                padding: 0px;
+                margin: 0;
+                margin-left: 10px;
+                border: none;
+                outline: none;
+    
+                height: 40px;
+                max-width: 100%;
+
+                border-radius: 40px; 
+                padding-right: 15px;
+
+                line-height: 30px;   
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            #new-folder-text-box:focus, input:focus {
+                outline:none
+            }
+
+            #new-folder-button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                scale: 105%;
+
+                background: var(--background);
+                color: var(--text-light);
+                cursor: pointer;
+
+                min-width: 30px;
+                line-height: 30px;
+
+                padding: 5px;
+                margin: 5px;
+                margin-right: 0px;
+            }
+
+            #split-view-button-1 {
+                font-size: var(--smallFont);
+            }
+            #split-view-button-2 {
+                font-size: var(--smallFont);
+            }
+
+            #logout-button a {
+                color: var(--text-light);
+                display: inline-block;
+                position: fixed;
+                top: 50px; /* Adjusted the top value to move the button down */
+                right: 30px;
+                text-decoration: none;
+            }
+
+            #create-note-button {
+                color: var(--text-light);
+            }
+            #save-note-button {
+                color: var(--text-dark);
+            }
+            #delete-note-button {
+                color: var(--text-dark);
+            }
+            #transcription-button-1 {
+                color: var(--text-dark);
+            }
+            #transcription-button-2 {
+                color: var(--text-dark);
+            }
+
+            .icon-button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                scale: 105%;
+
+                background-color: transparent;
+                cursor: pointer;
+
+                width: 30px;
+
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: unset;
+
+                border: none;
+            }
+
+            textarea.note-body {
+                resize: none; 
+                background-color: transparent;
+                color: var(--text-dark);
+                font: inherit;
+
+                width: 100%;
+                height: 100%;
+                border: none;
+                padding-top: 15px;
+                padding-left: 15px;
+                padding-right: 15x;
+            }
+
+            textarea.note-body:focus, input:focus {
+                outline:none
+            }
+        </style>
+    </head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }} </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %} {% endblock %}
+
+            <div id="google_translate_element" style="position: fixed; bottom: 12px; left: 12px;"></div>
+    </body>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                exclude: ['.notranslate']
+            }, 'google_translate_element');
+        }
+    </script>
+
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    
+</html>

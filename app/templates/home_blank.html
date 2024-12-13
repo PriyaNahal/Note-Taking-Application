@@ -1,0 +1,252 @@
+{% extends "base.html"%}
+
+{% block title %}Home_blank{% endblock %}
+
+{% block content %}
+    <div id="app-container">
+        <!-- Add Logout Button -->
+        <div id="logout-button">
+            <a href="/" class="small-text">Logout</a>
+        </div>
+
+        <h1>Home</h1>
+    
+        <div id="main-container">  
+            <div id="sidebar" class="column"> 
+                <div class=hotbar>
+                    <b>(LABEL)</b>
+                </div>
+            
+
+                <!-- Pill Folder Example -- chunk can be removed-->
+                <div class= "pill-box exampleItem">
+                    A Pill Box
+                </div>
+                <div class= "pill-box exampleItem">
+                    A Pill Box: The Sequel
+                </div>
+                <!-- Pill Folder Example -->
+
+
+                <!-- "Create Note" icon button -->
+                <div class="btn">
+                    <div>
+                        <button id="create-note-button">
+                            <i class="fas fa-plus"></i>
+                            Create Note
+                        </button>
+                    </div>
+                </div>
+            </div> 
+
+            <div id="main-content">
+                <div class=hotbar></div>
+                <div id="main">
+
+                </div>
+
+                <script src="https://kit.fontawesome.com/bf520e6492.js" crossorigin="anonymous"> 
+                </script> 
+                <script src="./script.js"></script>                                           
+
+            <script>
+                    const addBtn = document.querySelector("#create-note-button"); 
+                    const main = document.querySelector("#main"); 
+                    
+                    addBtn.addEventListener("click", function () { 
+                        addNote(); 
+                    }); 
+    
+                    const saveNotes = () => {  
+                        const notes = document.querySelectorAll(".note .content");
+                        const titles = document.querySelectorAll(".note .title");
+                    
+                        const data = []; 
+                    
+                        notes.forEach((note, index) => { 
+                            const content = note.value; 
+                            const title = titles[index].value; 
+                            console.log(title); 
+                            if (content.trim() !== "") { 
+                                data.push({ title, content }); 
+                            } 
+                        });
+
+                        const titlesData = data.map((item) => item.title); 
+
+                        console.log(titlesData); 
+                        localStorage.setItem("titles", JSON.stringify(titlesData)); 
+                    
+                        const contentData = data.map((item) => item.content); 
+                        localStorage.setItem("notes", JSON.stringify(contentData)); 
+                     }; 
+    
+                    const addNote = (text = "", title = "") => { 
+                        const note = document.createElement("div"); 
+                        note.classList.add("note"); 
+                        note.innerHTML = ` 
+                            <div class="icons"> 
+                                <i class="save fas fa-save" 
+                                    style="color:blue"> 
+                                </i> 
+                                <i class="trash fas fa-trash" 
+                                    style="color:grey"> 
+                                </i>  
+                            </div> 
+                            <div class="title-div"> 
+                                <textarea class="title" 
+                                    placeholder="Write the title ...">${title} 
+                                </textarea> 
+                            </div> 
+                            <textarea class="content" 
+                                placeholder="Note down your thoughts ...">${text} 
+                            </textarea> 
+                            `; 
+
+                        function trashCan() { 
+                            note.remove(); 
+                            saveNotes(); 
+                        } 
+
+                        function saveIcon() { 
+                            saveNotes(); 
+                        } 
+
+                        const deleteB = note.querySelector(".trash"); 
+                        const saveB = note.querySelector(".save"); 
+                        const textareas = note.querySelectorAll("textarea"); 
+                    
+                        deleteB.addEventListener("click", trashCan); 
+                        saveB.addEventListener("click", saveIcon); 
+                    
+                        main.appendChild(note); 
+                        saveNotes(); 
+                    }; 
+    
+                    function loadNotes() { 
+                    
+                        const titlesData = JSON.parse(localStorage.getItem("titles")) || []; 
+                        const contentData = JSON.parse(localStorage.getItem("notes")) || []; 
+                            
+                        for (let i = 0; i < Math.max(titlesData.length, contentData.length); i++) {  
+                            addNote(contentData[i], titlesData[i]); 
+                        } 
+                    } 
+
+                    loadNotes();
+
+                </script>
+            </div>
+        </div>
+    </div> 
+ 
+
+    <style>
+        #create-note-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        #create-note-button button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #create-note-button button i {
+            margin-right: 5px;
+        }
+
+        #logout-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: inline-block;
+        }
+
+        #logout-button a {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+        }
+    
+        * { 
+            padding: 0; 
+            margin: 0; 
+            box-sizing: border-box; 
+
+        } 
+  
+        #addBtn { 
+            position: fixed; 
+            left: 18px; 
+            top: 10px; 
+            background-color: #2d3436; 
+            color: white; 
+            padding: 10px; 
+            border: 0; 
+            outline: 0; 
+            border-radius: 5px; 
+        } 
+  
+        .btn { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background-color: white; 
+            margin-top: 0px; 
+        } 
+  
+        .note { 
+            top: 1;
+            padding: 0px;
+            width: 1280px; 
+            height: 130px; 
+            background-color: var(--background-light);
+            margin-bottom: 0px; 
+        } 
+  
+        .icons { 
+            position: absolute;
+            top: 0;
+            right: -320;  /* old settings before merge  right: -160; */
+            width: 100%; 
+            background-color: #264653; 
+            color: white; 
+            padding: 5px; 
+            display: flex; 
+            justify-content: start; 
+        } 
+  
+        .icons i { 
+            padding: 5px; 
+            cursor: pointer; 
+        }  
+        
+        .note textarea { 
+            border: none; 
+            width: 1280px;
+            height: 90px; 
+            resize: none; 
+            font-size: 18px; 
+            background-color: rgb(218, 218, 214); 
+        } 
+
+        .title-div textarea { 
+            height: 40;
+            background-color: #4c6bc7; 
+            font-weight: bolder; 
+            font-size: x-large; 
+        }
+
+        
+
+    </style>
+          
+{% endblock %}
+
+<!--References: https://www.geeksforgeeks.org/how-to-build-notes-app-using-html-css-javascript/-->

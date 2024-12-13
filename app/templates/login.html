@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Text</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .centered-text {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .small-text {
+            font-size: 14px; /* You can adjust the size as needed */
+            color: white;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px; 
+        }
+    </style>
+</head>
+
+<form id="LoginForm" action="" method="POST" novalidate>
+    <h1 class="centered-text">Login</h1>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username.label }} <br>
+        {{ form.username(size=32) }}
+    </p>
+
+    <p>
+        {{ form.password.label }} <br>
+        {{ form.password(size=32) }}
+        {% if form.errors.password %}
+            <span class="error-message">Invalid password entered.</span>
+        {% endif %}
+    </p>
+
+    <p>
+        <label for="remember_me">Remember Me</label>
+        <input type="checkbox" id="remember_me" name="remember_me">
+    </p>
+
+    <button type="submit" onclick="storeInfo()">Login</button>
+
+    <body>
+        {% if form.errors.username %}
+            <span class="error-message">Invalid email entered.</span>
+        {% endif %}
+
+        <p class="small-text">Don't have an account?</p>
+        <a href="createaccount" class="small-text"> Create Account</a>
+    </body>
+</form>
+
+<script>
+    function storeInfo() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        var remember_me = document.getElementById('remember_me').checked;
+
+        if (remember_me) {
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+        } else {
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+        }
+
+        window.location.href = '/home';
+    }
+</script>
+
+{% endblock %}
